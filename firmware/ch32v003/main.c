@@ -167,6 +167,22 @@ void usb_handle_other_control_message(struct usb_endpoint * e, struct usb_urb * 
             }
             break;
 
+        // AVR ISP commands (8-12) - stubs for protocol compatibility
+        // CH32V003 doesn't have AVR ISP capability but we respond gracefully
+        case USBTINY_POLL_BYTES:  // 8
+            sendBuffer[0] = 0;  // No bytes pending
+            e->opaque = (uint8_t*)sendBuffer;
+            e->max_len = 1;
+            break;
+
+        case USBTINY_FLASH_READ:  // 9
+        case USBTINY_FLASH_WRITE:  // 10
+        case USBTINY_EEPROM_READ:  // 11
+        case USBTINY_EEPROM_WRITE:  // 12
+            // Not supported on CH32V003 - return empty response
+            usb_send_empty(0);
+            return;
+
         case USBTINY_PIN_SET_INPUT:  // 13
             set_pin_input(bit);
             usb_send_empty(0);

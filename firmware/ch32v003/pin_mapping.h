@@ -51,26 +51,28 @@
 #define USB_DPU_PIN  5
 
 // ==== SPI Peripheral Mapping ====
-// Using hardware SPI on CH32V003
+// Using bitbang SPI on Little-Wire compatible pins
+// Matches original ATtiny85: SCK=PB2, MOSI=PB0, MISO=PB1
 #define SPI_SCK_PORT  C
-#define SPI_SCK_PIN   5
+#define SPI_SCK_PIN   2  // PIN2 (was PB2 on ATtiny85)
 
 #define SPI_MOSI_PORT C
-#define SPI_MOSI_PIN  6
+#define SPI_MOSI_PIN  4  // PIN4 (was PB0 on ATtiny85)
 
 #define SPI_MISO_PORT C
-#define SPI_MISO_PIN  7
+#define SPI_MISO_PIN  1  // PIN1 (was PB1 on ATtiny85)
 
 #define SPI_CS_PORT   C
 #define SPI_CS_PIN    3  // Default chip select (PIN3)
 
 // ==== I2C Peripheral Mapping ====
-// Using hardware I2C on CH32V003
+// Using bitbang I2C on Little-Wire compatible pins
+// Matches original ATtiny85: SCL=PB2, SDA=PB0
 #define I2C_SCL_PORT  C
-#define I2C_SCL_PIN   2  // PIN2
+#define I2C_SCL_PIN   2  // PIN2 (was PB2 on ATtiny85)
 
 #define I2C_SDA_PORT  C
-#define I2C_SDA_PIN   1  // PIN1
+#define I2C_SDA_PIN   4  // PIN4 (was PB0 on ATtiny85)
 
 // ==== ADC Channel Mapping ====
 // CH32V003 has ADC on PA1, PA2, PC4, PD2-PD6
@@ -94,8 +96,9 @@
 #define PWM_CH2_PIN   2
 
 // ==== OneWire Default Pin ====
+// Matches original ATtiny85: DATA_PIN=PB2 (PIN2)
 #define ONEWIRE_PORT  C
-#define ONEWIRE_PIN   4   // PIN4 by default
+#define ONEWIRE_PIN   2   // PIN2 by default (was PB2 on ATtiny85)
 
 // ==== WS2812 Default Pin ====
 #define WS2812_PORT   C
@@ -149,13 +152,13 @@ static inline uint8_t lw_pin_to_gpio(uint8_t pin) {
  * Pin 8:  PD0 / GPIO
  * Pin 9:  PD1 / GPIO (SWIO)
  * Pin 10: PC0 / GPIO
- * Pin 11: PC1 / GPIO / TIM1_CH1 / I2C_SDA -> Little-Wire PIN1
- * Pin 12: PC2 / GPIO / TIM1_CH2 / I2C_SCL -> Little-Wire PIN2
- * Pin 13: PC3 / GPIO / TIM1_CH3           -> Little-Wire PIN3
- * Pin 14: PC4 / GPIO / TIM1_CH4 / ADC2    -> Little-Wire PIN4
- * Pin 15: PC5 / GPIO / SPI_SCK
- * Pin 16: PC6 / GPIO / SPI_MOSI
- * Pin 17: PC7 / GPIO / SPI_MISO
+ * Pin 11: PC1 / GPIO / TIM1_CH1 / SPI_MISO    -> Little-Wire PIN1
+ * Pin 12: PC2 / GPIO / TIM1_CH2 / SCK/SCL/OW  -> Little-Wire PIN2
+ * Pin 13: PC3 / GPIO / TIM1_CH3               -> Little-Wire PIN3
+ * Pin 14: PC4 / GPIO / TIM1_CH4 / MOSI/SDA    -> Little-Wire PIN4
+ * Pin 15: PC5 / GPIO (available for expansion)
+ * Pin 16: PC6 / GPIO (available for expansion)
+ * Pin 17: PC7 / GPIO (available for expansion)
  * Pin 18: PD2 / GPIO / USB D+ (alternate)
  * Pin 19: PD3 / GPIO / USB D+
  * Pin 20: VDD (3.3V)

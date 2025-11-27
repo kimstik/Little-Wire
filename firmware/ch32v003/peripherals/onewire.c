@@ -11,8 +11,8 @@
 #include "onewire.h"
 #include "../pin_mapping.h"
 
-// Default OneWire pin: PC4 (PIN4)
-static uint8_t ow_pin = 4;
+// Default OneWire pin: PC2 (PIN2) - matches PB2 on original ATtiny85
+static uint8_t ow_pin = 2;
 
 // Macros for pin control (using Port C)
 #define OW_OUTPUT() do { \

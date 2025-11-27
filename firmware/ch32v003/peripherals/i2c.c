@@ -12,43 +12,46 @@
 #include "i2c.h"
 #include "../pin_mapping.h"
 
-// I2C pins (bitbang)
-// SCL = PC2 (PIN2)
-// SDA = PC1 (PIN1)
+// I2C pins (bitbang) - matching original ATtiny85 Little-Wire
+// SCL = PC2 (PIN2) - matches PB2 on ATtiny85
+// SDA = PC4 (PIN4) - matches PB0 on ATtiny85
+
+#define I2C_SDA_PIN  4  // PC4 = PIN4 (was PB0 on ATtiny85)
+#define I2C_SCL_PIN  2  // PC2 = PIN2 (was PB2 on ATtiny85)
 
 static uint8_t i2c_delay = 5;
 
 // Internal helpers
 static inline void sda_high(void) {
     // Release SDA (input with pull-up = high)
-    GPIOC->CFGLR &= ~(0xF << (1 * 4));
-    GPIOC->CFGLR |= (0x8 << (1 * 4));  // Input with pull
-    GPIOC->BSHR = (1 << 1);  // Pull-up
+    GPIOC->CFGLR &= ~(0xFUL << (I2C_SDA_PIN * 4));
+    GPIOC->CFGLR |= (0x8UL << (I2C_SDA_PIN * 4));  // Input with pull
+    GPIOC->BSHR = (1UL << I2C_SDA_PIN);  // Pull-up
 }
 
 static inline void sda_low(void) {
     // Drive SDA low
-    GPIOC->CFGLR &= ~(0xF << (1 * 4));
-    GPIOC->CFGLR |= (0x1 << (1 * 4));  // Push-pull output
-    GPIOC->BCR = (1 << 1);  // Low
+    GPIOC->CFGLR &= ~(0xFUL << (I2C_SDA_PIN * 4));
+    GPIOC->CFGLR |= (0x1UL << (I2C_SDA_PIN * 4));  // Push-pull output
+    GPIOC->BCR = (1UL << I2C_SDA_PIN);  // Low
 }
 
 static inline void scl_high(void) {
     // Release SCL (input with pull-up = high)
-    GPIOC->CFGLR &= ~(0xF << (2 * 4));
-    GPIOC->CFGLR |= (0x8 << (2 * 4));  // Input with pull
-    GPIOC->BSHR = (1 << 2);  // Pull-up
+    GPIOC->CFGLR &= ~(0xFUL << (I2C_SCL_PIN * 4));
+    GPIOC->CFGLR |= (0x8UL << (I2C_SCL_PIN * 4));  // Input with pull
+    GPIOC->BSHR = (1UL << I2C_SCL_PIN);  // Pull-up
 }
 
 static inline void scl_low(void) {
     // Drive SCL low
-    GPIOC->CFGLR &= ~(0xF << (2 * 4));
-    GPIOC->CFGLR |= (0x1 << (2 * 4));  // Push-pull output
-    GPIOC->BCR = (1 << 2);  // Low
+    GPIOC->CFGLR &= ~(0xFUL << (I2C_SCL_PIN * 4));
+    GPIOC->CFGLR |= (0x1UL << (I2C_SCL_PIN * 4));  // Push-pull output
+    GPIOC->BCR = (1UL << I2C_SCL_PIN);  // Low
 }
 
 static inline uint8_t sda_read(void) {
-    return (GPIOC->INDR >> 1) & 1;
+    return (GPIOC->INDR >> I2C_SDA_PIN) & 1;
 }
 
 static inline void i2c_delay_us(void) {
